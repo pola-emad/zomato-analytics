@@ -4,6 +4,7 @@ dbt_packages/
 logs/
 .env
 dbt_internal_packages/
+packages.yml
 
 
 
