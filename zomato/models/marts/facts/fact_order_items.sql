@@ -1,6 +1,14 @@
 {{ config(materialized='incremental', unique_key='order_item_id', incremental_strategy='merge', on_schema_change='append_new_columns') }}
-select oi.order_item_id, oi.order_id, oi.restaurant_id, oi.f_id, o.order_timestamp as order_ts,
-       o.order_date, o.city, oi.price, oi.quantity, oi.line_amount
+select oi.order_item_id, 
+    oi.order_id, 
+    oi.restaurant_id, 
+    oi.food_id, 
+    o.order_timestamp as order_ts,
+    o.order_date, 
+    o.city, 
+    oi.price, 
+    oi.quantity, 
+    oi.line_amount
 from {{ ref('stg__order_items') }} oi
 inner join {{ ref('stg__orders') }} o using (order_id)
 {% if is_incremental() %}
