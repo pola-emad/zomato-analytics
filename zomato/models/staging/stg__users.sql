@@ -8,15 +8,15 @@ renamed as (
 
     select
         
-        user_id,
-        name as user_name,
+        user_id as customer_id,
+        name as customer_name,
         email,
         age::integer as age,
         gender,
         "MARITAL STATUS" as marital_status,
         occupation,
-        "MONTHLY INCOME" as monthly_income,
-        "EDUCATIONAL QUALIFICATIONS" as educational_qualifications,
+        "MONTHLY INCOME" as income_band,
+        "EDUCATIONAL QUALIFICATIONS" as education,
         "FAMILY SIZE" as family_size
 
     from source
