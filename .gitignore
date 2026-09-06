@@ -5,6 +5,9 @@ logs/
 .env
 dbt_internal_packages/
 packages.yml
+ai/tst.ipynb
+ai/tst2.ipynb
+
 
 
 

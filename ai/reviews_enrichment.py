@@ -5,13 +5,18 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from pathlib import Path
 
-# Load the .env file located beside this notebook.
-load_dotenv(Path.cwd() / ".env")
+# Load the .env file located beside this script, regardless of the launch directory.
+dotenv_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=dotenv_path)
 MODEL ="minimax/minimax-m2.7:free"
 # Initialize the client pointing to OpenRouter's endpoint
+api_key = os.getenv("api_key")
+if not api_key:
+    raise RuntimeError(f"Missing api_key in {dotenv_path}")
+
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("api_key"),
+    api_key=api_key,
 )
 SAMPLE_N = 5
 TOPICS = ["food quality", "delivery", "pricing", "service", "packaging", "other"]
