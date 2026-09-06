@@ -20,7 +20,7 @@ renamed as (
         "FAMILY SIZE" as family_size
 
     from source
-limit 4
+--limit 4
 )
 
 select * from renamed

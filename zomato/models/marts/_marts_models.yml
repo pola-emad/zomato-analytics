@@ -1,0 +1,19 @@
+version: 2
+models:
+  - name: fct_orders
+    columns:
+      - name: order_id
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_customer')
+                field: customer_id    # referential integrity
+      - name: order_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Delivered','Cancelled','Refunded']
