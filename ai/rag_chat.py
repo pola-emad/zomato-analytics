@@ -41,9 +41,17 @@ def read_reviews_from_snowflake():
     )
 
     query = f"""
-        SELECT REVIEW_ID,  RATING, COMMENT
-        FROM ZOMATO.STAGING.STG__REVIEWS
-        SAMPLE ({NEW_REVIEWS} ROWS)
+        SELECT 
+    r.review_id,
+    r.rating,
+    r.comment,
+    r.review_date,
+    res.restaurant_name,
+    res.city,
+    res.cuisine
+FROM ZOMATO.STAGING.STG__REVIEWS AS r SAMPLE ({NEW_REVIEWS} ROWS)
+LEFT JOIN ZOMATO.STAGING.STG__RESTAURANTS AS res 
+    ON r.restaurant_id = res.restaurant_id;
     """
     df = conn.cursor().execute(query).fetch_pandas_all()
     conn.close()
@@ -145,7 +153,10 @@ def build_context(similar_reviews: pd.DataFrame, text_col: str,
     relevant = similar_reviews[similar_reviews["similarity_score"] >= min_similarity]
     if relevant.empty:
         return ""
-    return "\n\n".join(f"Review: {row[text_col]}" for _, row in relevant.iterrows())
+    return "\n\n".join(
+        f"Restaurant: {row['restaurant_name']} | Cuisine: {row['cuisine']} | City: {row['city']}\nReview: {row[text_col]}"
+        for _, row in relevant.iterrows()
+    )
 
 def ask_llm(query: str, similar_reviews: pd.DataFrame, text_col: str,
             conversation_history: list[dict]) -> str:
@@ -227,7 +238,7 @@ if query:
     with st.chat_message("assistant"):
         st.markdown(answer)
         with st.expander("Retrieved reviews (debug view)"):
-            st.dataframe(similar_reviews[["comment", "similarity_score"]])
+            st.dataframe(similar_reviews[["restaurant_name", "cuisine", "city", "comment", "similarity_score"]])
 
     st.session_state.conversation_history.append({"role": "user", "content": query})
     st.session_state.conversation_history.append({"role": "assistant", "content": answer})
