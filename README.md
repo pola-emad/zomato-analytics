@@ -3,3 +3,12 @@
 
 - naming convintions:
 models: <folder abbreviation>__<model name >
+
+- asking question outside of context
+![alt text](assets/image.png)
+
+- context aware:
+![alt text](assets/context%20aware.png)
+
+- recommendation and displaying the retrieved reviews:
+![alt text](assets/recommending%20restaurant.png)
