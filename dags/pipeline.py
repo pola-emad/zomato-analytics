@@ -47,17 +47,33 @@ def zomato_pipeline():
         """
         return """
         cd /opt/airflow/zomato && \
-        dbt build \
+        dbt build --exclude tag:ai \
         --profiles-dir /opt/airflow/zomato \
         --project-dir /opt/airflow/zomato
         """
 
+    @task.bash( task_id="enrich_reviews")
+    def build_reviews_enriched():
+        bash_command=f"python /opt/airflow/ai/reviews_enrichment.py"
+        return bash_command
+
+    @task.bash( task_id="build_ai_dbt_models")
+    def build_ai_dbt_models():
+        bash_command="""
+        cd /opt/airflow/zomato && \
+        dbt build --select tag:ai \
+        --profiles-dir /opt/airflow/zomato \
+        --project-dir /opt/airflow/zomato
+        """
+        return bash_command
     # Define task dependencies
     load_task = load_gdrive_data()
     dbt_task = run_dbt_build()
+    enrich_review_task = build_reviews_enriched()
+    build_ai_dbt_models_task = build_ai_dbt_models()
 
     # Execution order: load data first, then run dbt
-    load_task >> dbt_task
+    load_task >> dbt_task >> enrich_review_task >> build_ai_dbt_models_task
 
 
 # Instantiate the DAG
