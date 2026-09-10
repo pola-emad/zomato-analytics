@@ -43,7 +43,7 @@ files_to_load = [
     },
     {
         "source": "restaurant",
-        "target_table": "RAW_RESTAURANT",
+        "target_table": "RAW_RESTAURANTS",
         "url": "https://drive.google.com/file/d/1Z-OkUWHKYD6-eC6YVQtlnDN57i4vtT6Y/view?usp=drive_link"
     },
     {
